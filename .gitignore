@@ -1,0 +1,24 @@
+# Environments
+.env
+.venv/
+venv/
+env/
+backend/venv/
+backend/.env
+
+# Python/Django
+__pycache__/
+*.py[cod]
+*$py.class
+backend/db.sqlite3
+backend/media/
+backend/static/
+
+# IDEs and OS
+.vscode/
+.idea/
+.DS_Store
+
+# Frontend is covered by frontend/.gitignore but we can add some basics just in case
+node_modules/
+dist/
