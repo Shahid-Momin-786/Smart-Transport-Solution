@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { format } from 'date-fns'
+import { useNavigate } from 'react-router-dom'
 
 function BookingModal({ route, onClose, onBooked }) {
   const [tripId, setTripId] = useState('')
@@ -250,14 +251,21 @@ export default function PassengerRoutes() {
   const [destination, setDestination] = useState('')
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
-  const [bookingRoute, setBookingRoute] = useState(null)
-  const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   const effectiveSearch = source || destination || search
 
   const { data, isLoading } = useQuery({
-    queryKey: ['routes', effectiveSearch, page],
-    queryFn: () => routeService.list({ search: effectiveSearch, page, page_size: 10 }).then(r => r.data),
+    queryKey: ['routes', source, destination, search, page],
+    queryFn: async () => {
+      if (source && destination) {
+        // Use journey planner for source-to-destination search
+        return routeService.journeyPlanner(source, destination).then(r => r.data)
+      }
+      // Otherwise use standard search/list
+      const effectiveSearch = source || destination || search
+      return routeService.list({ search: effectiveSearch, page, page_size: 10 }).then(r => r.data)
+    },
   })
 
   const routes = data?.results || []
@@ -267,10 +275,8 @@ export default function PassengerRoutes() {
     setPage(1)
   }
 
-  const handleBooked = () => {
-    queryClient.invalidateQueries(['my-tickets'])
-    setBookingRoute(null)
-    toast.success('Journey booked! Check My Tickets.')
+  const handleBook = (route) => {
+    navigate('/tickets', { state: { routeNumber: route.route_number } })
   }
 
   return (
@@ -404,7 +410,7 @@ export default function PassengerRoutes() {
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {routes.map(route => (
-            <RouteCard key={route.id} route={route} onBook={setBookingRoute} />
+            <RouteCard key={route.id} route={route} onBook={handleBook} />
           ))}
         </div>
       )}
@@ -422,14 +428,6 @@ export default function PassengerRoutes() {
             Next
           </button>
         </div>
-      )}
-
-      {bookingRoute && (
-        <BookingModal
-          route={bookingRoute}
-          onClose={() => setBookingRoute(null)}
-          onBooked={handleBooked}
-        />
       )}
     </div>
   )

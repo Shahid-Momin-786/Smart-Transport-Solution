@@ -43,8 +43,15 @@ class RouteViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         qs = Route.objects.prefetch_related('stops').all()
-        if not user.is_superuser:
-            qs = qs.filter(depot=user.depot)
+        # Passengers & unauthenticated: see all active routes across all depots
+        # Admins (non-superuser): scoped to their own depot
+        if user.is_authenticated and not user.is_superuser:
+            role = getattr(user, 'role', 'PASSENGER')
+            if role == 'ADMIN':
+                qs = qs.filter(depot=user.depot)
+            else:
+                # PASSENGER, CONDUCTOR, DRIVER — see all active routes
+                qs = qs.filter(is_active=True)
         return qs
 
     def perform_create(self, serializer):

@@ -84,9 +84,13 @@ export const tripService = {
     api.post(`/trips/${id}/update-delay/`, { delay_minutes: delayMinutes, delay_reason: delayReason }),
 }
 
-// Bus Timings (replaces GPS tracking — schedule-based)
+// Bus Timings & Tracking
 export const busTimingsService = {
   list: () => api.get('/tracking/buses/'),
+}
+
+export const trackingService = {
+  activeBuses: () => api.get('/tracking/buses/'),
 }
 
 // Tickets

@@ -255,14 +255,16 @@ export default function PassengerTracking() {
 
               <div style={{ width: 1, height: 40, background: 'var(--border)', flexShrink: 0 }} />
 
-              {/* ETA placeholder */}
+              {/* ETA */}
               <div style={{ textAlign: 'center', flexShrink: 0 }}>
                 <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>
-                  ETA
+                  {activeBus.next_stop ? `ETA: ${activeBus.next_stop}` : 'ETA'}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                   <Clock size={13} style={{ color: 'var(--primary)' }} />
-                  <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>~8 min</span>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>
+                    {activeBus.eta_to_next_stop_minutes != null ? `~${activeBus.eta_to_next_stop_minutes} min` : '--'}
+                  </span>
                 </div>
               </div>
 

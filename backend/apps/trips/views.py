@@ -31,7 +31,7 @@ class TripViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         qs = Trip.objects.select_related('route', 'bus', 'depot').all()
-        if not user.is_superuser:
+        if user.is_authenticated and user.role == 'ADMIN' and not user.is_superuser:
             qs = qs.filter(depot=user.depot)
         return qs
 

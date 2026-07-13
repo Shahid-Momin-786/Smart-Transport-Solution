@@ -352,7 +352,7 @@ function TripCard({ trip, route }) {
         )}
         <button
           className="btn btn-primary btn-sm"
-          onClick={() => navigate('/tickets')}
+          onClick={() => navigate('/tickets', { state: { routeNumber: trip.route_number, tripId: trip.id } })}
         >
           <Ticket size={13} /> Book Ticket
         </button>
@@ -456,7 +456,7 @@ function JourneyPlanner() {
                       ))}
                     </div>
                   </div>
-                  <button className="btn btn-primary btn-sm" onClick={() => navigate('/tickets')}>
+                  <button className="btn btn-primary btn-sm" onClick={() => navigate('/tickets', { state: { routeNumber: route.route_number } })}>
                     <Ticket size={12} /> Book
                   </button>
                 </div>
@@ -729,11 +729,7 @@ export default function BusTimings() {
                           ))}
                         </div>
                       </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flexShrink: 0 }}>
-                        <button className="btn btn-primary btn-sm" onClick={() => navigate('/tickets')}>
-                          <Ticket size={12} /> Book
-                        </button>
-                      </div>
+                      {/* Book button removed as requested */}
                     </div>
                   </div>
                 ))

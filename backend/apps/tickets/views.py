@@ -49,7 +49,7 @@ class TicketViewSet(viewsets.ModelViewSet):
 
         data = serializer.validated_data
         try:
-            trip = Trip.objects.get(id=data['trip'], depot=request.user.depot)
+            trip = Trip.objects.get(id=data['trip'])
         except Trip.DoesNotExist:
             return Response({'error': 'Trip not found.'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -67,19 +67,33 @@ class TicketViewSet(viewsets.ModelViewSet):
             return Response({'error': f"Seat {data['seat_number']} is already booked."}, status=status.HTTP_400_BAD_REQUEST)
 
         boarding_stop = None
+        dropoff_stop = None
+        calculated_fare = trip.route.fare
+
         if data.get('boarding_stop'):
             try:
                 boarding_stop = Stop.objects.get(id=data['boarding_stop'], route=trip.route)
             except Stop.DoesNotExist:
                 pass
 
+        if data.get('dropoff_stop'):
+            try:
+                dropoff_stop = Stop.objects.get(id=data['dropoff_stop'], route=trip.route)
+            except Stop.DoesNotExist:
+                pass
+
+        if boarding_stop and dropoff_stop:
+            # Stage-based fare calculation (simple distance/stops logic)
+            stops_count = abs(dropoff_stop.order - boarding_stop.order)
+            calculated_fare = max(5, int(stops_count * 5)) # Example logic: min Rs 5, Rs 5 per stop
+
         ticket = Ticket.objects.create(
             passenger=request.user,
             trip=trip,
-            depot=request.user.depot,
+            depot=trip.depot,
             seat_number=data['seat_number'],
             boarding_stop=boarding_stop,
-            fare=trip.route.fare,
+            fare=calculated_fare,
         )
         return Response(TicketSerializer(ticket).data, status=status.HTTP_201_CREATED)
 

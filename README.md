@@ -4,7 +4,10 @@ A comprehensive, full-stack Smart Transport Solution designed to streamline tran
 
 ## 🚀 Features
 
+- **Dynamic Stage-Based Ticketing:** Real-time dynamic ticket fare calculation based on selected boarding and drop-off stops.
+- **Live Bus Timings & ETA:** Real-time Expected Time of Arrival (ETA) calculation, schedule delay management, and dynamic bus status tracking.
 - **Interactive Maps & Routing:** Integrated Leaflet maps for route visualization and transport tracking.
+- **Responsive Passenger Portal:** A mobile-first passenger dashboard to seamlessly manage daily passes, ticket booking, and upcoming journeys.
 - **Analytics Dashboard:** Comprehensive statistics and data visualization using Recharts.
 - **QR Code Ticketing & Passes:** Generate and manage QR codes for seamless ticketing and verification.
 - **Export & Reporting:** Export data, reports, and tickets in PDF and Excel formats.
@@ -87,6 +90,13 @@ SMTS/
    python manage.py runserver
    ```
    The backend API will be available at `http://127.0.0.1:8000/`.
+
+7. **Seed the Database (Optional):** Generate realistic test data using the custom management commands:
+   ```bash
+   python manage.py seed_all    # Seeds Depots, Buses, and Users
+   python manage.py seed_stops  # Seeds Routes and Stops with distances
+   python manage.py seed_trips  # Seeds daily trip schedules
+   ```
 
 ### Frontend Setup
 

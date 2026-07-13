@@ -24,6 +24,7 @@ class BookTicketSerializer(serializers.Serializer):
     trip = serializers.IntegerField()
     seat_number = serializers.CharField(max_length=10)
     boarding_stop = serializers.IntegerField(required=False, allow_null=True)
+    dropoff_stop = serializers.IntegerField(required=False, allow_null=True)
 
     def validate_seat_number(self, value):
         return value.upper()

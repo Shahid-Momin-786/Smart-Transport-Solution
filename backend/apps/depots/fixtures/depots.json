@@ -1,0 +1,184 @@
+[
+{
+  "model": "depots.depot",
+  "pk": 1,
+  "fields": {
+    "name": "Central Depot",
+    "code": "CD-01",
+    "city": "Mumbai",
+    "address": "1 Central Road, Dadar, Mumbai",
+    "phone": "022-12345678",
+    "is_active": true,
+    "created_at": "2026-06-16T12:46:47.322Z",
+    "updated_at": "2026-06-16T12:46:47.322Z"
+  }
+},
+{
+  "model": "depots.depot",
+  "pk": 2,
+  "fields": {
+    "name": "Eastern Depot",
+    "code": "ED-02",
+    "city": "Mumbai",
+    "address": "15 Eastern Ave, Kurla, Mumbai",
+    "phone": "022-87654321",
+    "is_active": true,
+    "created_at": "2026-06-16T12:46:47.385Z",
+    "updated_at": "2026-06-16T12:46:47.385Z"
+  }
+},
+{
+  "model": "depots.depot",
+  "pk": 3,
+  "fields": {
+    "name": "Swargate",
+    "code": "SWG",
+    "city": "Pune",
+    "address": "Swargate, Pune",
+    "phone": "",
+    "is_active": true,
+    "created_at": "2026-06-22T19:55:26.513Z",
+    "updated_at": "2026-06-22T19:55:26.513Z"
+  }
+},
+{
+  "model": "depots.depot",
+  "pk": 4,
+  "fields": {
+    "name": "Kothrud",
+    "code": "KTH",
+    "city": "Pune",
+    "address": "Kothrud, Pune",
+    "phone": "",
+    "is_active": true,
+    "created_at": "2026-06-22T19:55:26.532Z",
+    "updated_at": "2026-06-22T19:55:26.532Z"
+  }
+},
+{
+  "model": "depots.depot",
+  "pk": 5,
+  "fields": {
+    "name": "Hadapsar",
+    "code": "HDP",
+    "city": "Pune",
+    "address": "Hadapsar, Pune",
+    "phone": "",
+    "is_active": true,
+    "created_at": "2026-06-22T19:55:26.549Z",
+    "updated_at": "2026-06-22T19:55:26.549Z"
+  }
+},
+{
+  "model": "depots.depot",
+  "pk": 6,
+  "fields": {
+    "name": "Shivajinagar",
+    "code": "SHV",
+    "city": "Pune",
+    "address": "Shivajinagar, Pune",
+    "phone": "",
+    "is_active": true,
+    "created_at": "2026-06-22T19:55:26.567Z",
+    "updated_at": "2026-06-22T19:55:26.567Z"
+  }
+},
+{
+  "model": "depots.depot",
+  "pk": 7,
+  "fields": {
+    "name": "Nigdi",
+    "code": "NGD",
+    "city": "Pimpri-Chinchwad",
+    "address": "Nigdi, Pune",
+    "phone": "",
+    "is_active": true,
+    "created_at": "2026-06-22T19:55:26.580Z",
+    "updated_at": "2026-06-22T19:55:26.580Z"
+  }
+},
+{
+  "model": "depots.depot",
+  "pk": 8,
+  "fields": {
+    "name": "Pimpri",
+    "code": "PMP",
+    "city": "Pimpri-Chinchwad",
+    "address": "Pimpri, Pune",
+    "phone": "",
+    "is_active": true,
+    "created_at": "2026-06-22T19:55:26.592Z",
+    "updated_at": "2026-06-22T19:55:26.592Z"
+  }
+},
+{
+  "model": "depots.depot",
+  "pk": 9,
+  "fields": {
+    "name": "Bhosari",
+    "code": "BHS",
+    "city": "Pimpri-Chinchwad",
+    "address": "Bhosari, Pune",
+    "phone": "",
+    "is_active": true,
+    "created_at": "2026-06-22T19:55:26.602Z",
+    "updated_at": "2026-06-22T19:55:26.603Z"
+  }
+},
+{
+  "model": "depots.depot",
+  "pk": 10,
+  "fields": {
+    "name": "Wakad",
+    "code": "WKD",
+    "city": "Pimpri-Chinchwad",
+    "address": "Wakad, Pune",
+    "phone": "",
+    "is_active": true,
+    "created_at": "2026-06-22T19:55:26.634Z",
+    "updated_at": "2026-06-22T19:55:26.634Z"
+  }
+},
+{
+  "model": "depots.depot",
+  "pk": 11,
+  "fields": {
+    "name": "Hinjawadi",
+    "code": "HJW",
+    "city": "Pune",
+    "address": "Hinjawadi, Pune",
+    "phone": "",
+    "is_active": true,
+    "created_at": "2026-06-22T19:55:26.676Z",
+    "updated_at": "2026-06-22T19:55:26.676Z"
+  }
+},
+{
+  "model": "depots.depot",
+  "pk": 12,
+  "fields": {
+    "name": "Pune Station",
+    "code": "PST",
+    "city": "Pune",
+    "address": "Pune Railway Station, Pune",
+    "phone": "",
+    "is_active": true,
+    "created_at": "2026-06-22T19:55:26.684Z",
+    "updated_at": "2026-06-22T19:55:26.684Z"
+  }
+},
+{
+  "model": "depots.depot",
+  "pk": 13,
+  "fields": {
+    "name": "Katraj",
+    "code": "KTJ",
+    "city": "Pune",
+    "address": "Katraj, Pune",
+    "phone": "",
+    "is_active": true,
+    "created_at": "2026-06-22T19:55:26.701Z",
+    "updated_at": "2026-06-22T19:55:26.701Z"
+  }
+}
+]

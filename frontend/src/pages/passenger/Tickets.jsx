@@ -9,6 +9,8 @@ import { format } from 'date-fns'
 import toast from 'react-hot-toast'
 import jsPDF from 'jspdf'
 import { useAuth } from '@/contexts/AuthContext'
+import { useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
 
 const STATUS_CONFIG = {
   CONFIRMED: { label: 'Confirmed', badge: 'badge-primary', headerBg: 'var(--primary)', headerBgDark: '#1e40af' },
@@ -245,21 +247,30 @@ function TicketDetailModal({ ticket, onClose }) {
   )
 }
 
-function BookingModal({ onClose, onBooked }) {
-  const [tripId, setTripId] = useState('')
+function BookingModal({ onClose, onBooked, initialTripId, initialRouteNumber }) {
+  const [routeNumber, setRouteNumber] = useState(initialRouteNumber || '')
+  const [tripId, setTripId] = useState(initialTripId || '')
   const [seat, setSeat] = useState('')
+  const [boardingStop, setBoardingStop] = useState('')
+  const [dropoffStop, setDropoffStop] = useState('')
   const [loading, setLoading] = useState(false)
 
   const { data: tripsData } = useQuery({
-    queryKey: ['trips-available'],
-    queryFn: () => tripService.list({ status: 'SCHEDULED', page_size: 20 }).then(r => r.data),
+    queryKey: ['trips-available', routeNumber],
+    queryFn: () => tripService.list({ status: 'SCHEDULED', search: routeNumber, page_size: 20 }).then(r => r.data),
   })
 
   const handleBook = async () => {
-    if (!tripId || !seat) return toast.error('Select a trip and enter a seat number.')
+    if (!tripId || !seat) return toast.error('Select a departure time and enter a seat number.')
+    if (boardingStop && dropoffStop && boardingStop === dropoffStop) return toast.error('Boarding and drop-off stops cannot be the same.')
     setLoading(true)
     try {
-      await ticketService.book({ trip: tripId, seat_number: seat })
+      await ticketService.book({ 
+        trip: tripId, 
+        seat_number: seat,
+        boarding_stop: boardingStop || null,
+        dropoff_stop: dropoffStop || null,
+      })
       toast.success('Ticket booked successfully!')
       onBooked()
     } catch (err) {
@@ -272,6 +283,25 @@ function BookingModal({ onClose, onBooked }) {
   const trips = tripsData?.results || []
   const selectedTrip = trips.find(t => String(t.id) === String(tripId))
 
+  const { data: stopsData } = useQuery({
+    queryKey: ['route-stops', selectedTrip?.route],
+    queryFn: () => routeService.stops(selectedTrip.route).then(r => r.data),
+    enabled: !!selectedTrip?.route,
+  })
+
+  const stops = stopsData || []
+
+  // Calculate dynamic fare
+  let displayFare = selectedTrip?.route?.fare || selectedTrip?.fare || 0
+  if (boardingStop && dropoffStop && stops.length > 0) {
+    const bStop = stops.find(s => String(s.id) === String(boardingStop))
+    const dStop = stops.find(s => String(s.id) === String(dropoffStop))
+    if (bStop && dStop) {
+      const stopsCount = Math.abs(dStop.order - bStop.order)
+      displayFare = Math.max(5, stopsCount * 5)
+    }
+  }
+
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal" onClick={e => e.stopPropagation()}>
@@ -281,16 +311,53 @@ function BookingModal({ onClose, onBooked }) {
         </div>
         <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div className="form-group">
-            <label className="form-label">Select Trip *</label>
-            <select className="form-input" value={tripId} onChange={e => setTripId(e.target.value)}>
-              <option value="">Choose a trip…</option>
+            <label className="form-label">Route Number</label>
+            <input
+              type="text"
+              className="form-input"
+              placeholder="e.g. 139 or Wakad"
+              value={routeNumber}
+              onChange={e => {
+                setRouteNumber(e.target.value)
+                setTripId('')
+              }}
+            />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Select Departure Time *</label>
+            <select className="form-input" value={tripId} onChange={e => {
+              setTripId(e.target.value)
+              setBoardingStop('')
+              setDropoffStop('')
+            }}>
+              <option value="">Choose a departure time…</option>
               {trips.map(t => (
                 <option key={t.id} value={t.id}>
-                  {t.route_number} · {t.bus_number} · {t.available_seats} seats left
+                  {t.departure_display || 'Scheduled'} · {t.route_number} ({t.source} → {t.destination}) · {t.available_seats} seats left
                 </option>
               ))}
             </select>
           </div>
+          
+          {stops.length > 0 && (
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+              <div className="form-group">
+                <label className="form-label">Boarding Stop</label>
+                <select className="form-input" value={boardingStop} onChange={e => setBoardingStop(e.target.value)}>
+                  <option value="">Select boarding stop...</option>
+                  {stops.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Drop-off Stop</label>
+                <select className="form-input" value={dropoffStop} onChange={e => setDropoffStop(e.target.value)}>
+                  <option value="">Select drop-off stop...</option>
+                  {stops.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                </select>
+              </div>
+            </div>
+          )}
+
           <div className="form-group">
             <label className="form-label">Seat Number *</label>
             <input
@@ -303,16 +370,16 @@ function BookingModal({ onClose, onBooked }) {
             />
             <p className="form-help">Format: Letter + Number (A1 to E10)</p>
           </div>
-          {selectedTrip && (
+          {selectedTrip ? (
             <div style={{
               padding: '10px 12px', background: 'var(--surface)',
               borderRadius: 'var(--radius)', border: '1px solid var(--border)',
               display: 'flex', justifyContent: 'space-between',
             }}>
               <div>
-                <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 1 }}>Fare</div>
+                <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 1 }}>Calculated Fare</div>
                 <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)' }}>
-                  ₹{selectedTrip.route?.fare || '—'}
+                  ₹{displayFare}
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
@@ -320,7 +387,19 @@ function BookingModal({ onClose, onBooked }) {
                 <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--success)' }}>{selectedTrip.available_seats} seats</div>
               </div>
             </div>
-          )}
+          ) : trips.length > 0 && routeNumber ? (
+            <div style={{
+              padding: '10px 12px', background: 'var(--surface)',
+              borderRadius: 'var(--radius)', border: '1px solid var(--border)',
+            }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 4 }}>
+                {trips[0].source} → {trips[0].destination}
+              </div>
+              <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                Route Fare: ₹{trips[0].route?.fare || trips[0].fare}
+              </div>
+            </div>
+          ) : null}
         </div>
         <div className="modal-footer">
           <button className="btn btn-secondary btn-sm" onClick={onClose}>Cancel</button>
@@ -342,6 +421,7 @@ const FILTER_TABS = [
 ]
 
 export default function PassengerTickets() {
+  const location = useLocation()
   const [selectedTicket, setSelectedTicket] = useState(null)
   const [bookingOpen, setBookingOpen] = useState(false)
   const [statusFilter, setStatusFilter] = useState('')
@@ -349,6 +429,12 @@ export default function PassengerTickets() {
   const [page, setPage] = useState(1)
   const [cancellingId, setCancellingId] = useState(null)
   const queryClient = useQueryClient()
+
+  useEffect(() => {
+    if (location.state?.routeNumber || location.state?.tripId) {
+      setBookingOpen(true)
+    }
+  }, [location.state])
 
   const { data, isLoading } = useQuery({
     queryKey: ['my-tickets', search, statusFilter, page],
@@ -471,6 +557,8 @@ export default function PassengerTickets() {
       {selectedTicket && <TicketDetailModal ticket={selectedTicket} onClose={() => setSelectedTicket(null)} />}
       {bookingOpen && (
         <BookingModal
+          initialRouteNumber={location.state?.routeNumber}
+          initialTripId={location.state?.tripId}
           onClose={() => setBookingOpen(false)}
           onBooked={() => { queryClient.invalidateQueries(['my-tickets']); setBookingOpen(false) }}
         />

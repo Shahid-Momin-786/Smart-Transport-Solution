@@ -223,35 +223,39 @@ export default function PassengerDashboard() {
             {activePass ? (
               <div
                 className="pass-metro"
-                style={{ background: `linear-gradient(135deg, ${passColor}dd, ${passColor})`, cursor: 'pointer' }}
+                style={{ background: `linear-gradient(135deg, ${passColor}dd, ${passColor})`, cursor: 'pointer', height: '100%', minHeight: 160 }}
                 onClick={() => {}}
               >
                 <div className="pass-metro-pattern" />
-                <div className="pass-metro-body">
-                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                <div className="pass-metro-body" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', width: '100%' }}>
                     <div>
-                      <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.65)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>
-                        {activePass.category_display || activePass.pass_type} PASS
+                      <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.8)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>
+                        {activePass.category_display || activePass.pass_type || 'GENERAL'} PASS
                       </div>
-                      <div className="pass-metro-chip" />
+                      <div className="pass-metro-chip" style={{ width: 32, height: 24, borderRadius: 4, background: 'rgba(255,255,255,0.3)', marginTop: 8 }} />
                     </div>
                     <span style={{
-                      fontSize: 9, fontWeight: 700, color: 'white',
-                      background: 'rgba(255,255,255,0.2)', borderRadius: 3,
-                      padding: '2px 6px', textTransform: 'uppercase', letterSpacing: '0.05em',
+                      fontSize: 10, fontWeight: 700, color: 'white',
+                      background: 'rgba(255,255,255,0.2)', borderRadius: 4,
+                      padding: '4px 8px', textTransform: 'uppercase', letterSpacing: '0.05em',
                     }}>ACTIVE</span>
                   </div>
-                  <div>
-                    <div className="pass-metro-name">{activePass.passenger_name}</div>
-                    <div className="pass-metro-number">{activePass.pass_number}</div>
-                    <div className="pass-metro-expiry" style={{ marginTop: 4 }}>
-                      Valid until {format(new Date(activePass.valid_to), 'd MMM yyyy')}
+                  <div style={{ marginTop: 'auto', paddingTop: 16 }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: 'white', textTransform: 'uppercase' }}>
+                      {activePass.passenger_name || user?.name || 'Passenger'}
+                    </div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.9)', marginTop: 2, fontFamily: 'monospace' }}>
+                      {activePass.pass_number || 'N/A'}
+                    </div>
+                    <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', marginTop: 4 }}>
+                      Valid until {activePass.valid_to ? format(new Date(activePass.valid_to), 'd MMM yyyy') : 'N/A'}
                     </div>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="card" style={{ height: '100%', minHeight: 140, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 10, textAlign: 'center', padding: 20 }}>
+              <div className="card" style={{ height: '100%', minHeight: 160, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 10, textAlign: 'center', padding: 20 }}>
                 <div style={{
                   width: 40, height: 40, borderRadius: '50%',
                   background: 'var(--surface-2)',
@@ -264,8 +268,8 @@ export default function PassengerDashboard() {
                   <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Get a daily or long-term pass</div>
                 </div>
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
-                  <Link to="/passes/daily" className="btn btn-primary btn-sm"><Zap size={11} /> Daily Pass</Link>
-                  <Link to="/passes/apply" className="btn btn-secondary btn-sm">Apply Pass</Link>
+                  <Link to="/passes/daily" className="btn btn-primary btn-sm"><Zap size={11} /> Daily</Link>
+                  <Link to="/passes/apply" className="btn btn-secondary btn-sm">Apply</Link>
                 </div>
               </div>
             )}
