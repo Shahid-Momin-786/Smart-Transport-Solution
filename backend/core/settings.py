@@ -73,15 +73,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+import dj_database_url
 
-# For production with PostgreSQL, set DATABASE_URL env var:
-# DATABASE_URL=postgres://user:pass@host:5432/dbname
+DATABASES = {
+    'default': config(
+        'DATABASE_URL',
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        cast=dj_database_url.parse
+    )
+}
 
 # Custom User Model
 AUTH_USER_MODEL = 'authentication.User'
