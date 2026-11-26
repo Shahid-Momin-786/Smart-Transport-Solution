@@ -1,0 +1,105 @@
+# ============================================================
+# SMTS Backend — .gitignore
+# ============================================================
+
+# --- Secrets & Environment ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+.eggs/
+sdist/
+wheels/
+*.egg-link
+pip-wheel-metadata/
+share/python-wheels/
+MANIFEST
+
+# --- Virtual Environments ---
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# --- Django Specific ---
+db.sqlite3
+db.sqlite3-journal
+*.sqlite3
+staticfiles/
+static_root/
+media/
+
+# --- Logs ---
+*.log
+logs/
+django_debug.log
+
+# --- Testing & Coverage ---
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+htmlcov/
+.pytest_cache/
+test-results/
+
+# --- Type Checking ---
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pytype/
+.pyre/
+
+# --- Packaging / Build ---
+*.manifest
+*.spec
+*.pyc
+
+# --- OS Files ---
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+
+# --- IDEs ---
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# --- Jupyter Notebooks ---
+.ipynb_checkpoints/
+*.ipynb
+
+# --- Celery ---
+celerybeat-schedule
+celerybeat.pid
+
+# --- Translations ---
+*.mo
+*.pot
